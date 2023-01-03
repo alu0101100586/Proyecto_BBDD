@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %} - FlaskApp</title>
+    <style>
+        nav a {
+            color: #d64161;
+            font-size: 3em;
+            margin-left: 50px;
+            text-decoration: none;
+        }
 
+        .book {
+            padding: 20px;
+            margin: 10px;
+            background-color: #f7f4f4;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight:100;
+        }
+
+        .delete {
+            display: grid;
+            place-items: center;
+        }
+
+        .delete .deletedBook {
+            font-size: 30px;
+            color: lawngreen;
+        }
+
+        .delete .errorBook {
+            font-size: 30px;
+            color: rgb(252, 0, 0);
+        }
+
+        .review {
+                margin-left: 50px;
+                font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">FlaskApp</a>
+        <a href="{{ url_for('create')}}">Create</a>
+        <a href="{{ url_for('aboutUs') }}">About</a>
+        <a href="{{ url_for('delete') }}">Delete</a>
+        <a href="{{ url_for('requestmodify') }}">Modify</a>
+    </nav>
+    <hr>
+    <div class="content">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

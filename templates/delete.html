@@ -1,1 +1,32 @@
+{% extends 'base.html' %}
 
+{% block content %}
+  <div class="delete">
+    <h1>{% block title %} Delete a Book{% endblock %}</h1>
+    <form method="post">
+        <p>
+            <label for="id">Title</label>
+            <input type="text" name="id"
+                   placeholder="Book id">
+            </input>
+        </p>
+        <p >
+            <button type="submit">Delete</button>
+        </p>
+
+      </form>
+      
+      {% if delFlag %}
+        {% if book %}
+          <p class="deletedBook">Borrado</p>
+          <div class='book'>
+            <h3>#{{ book[0] }} - {{ book[1] }} BY {{ book[2] }}</h3>
+            <i><p>({{ book[3] }} pages)</p></i>
+            <p class='review'>{{ book[4] }}</p>
+          </div>
+        {% else %}
+          <p class="errorBook">Book id = {{reqID}} not found!</p>
+        {% endif %}
+      {% endif %}
+  </div>
+{% endblock %}

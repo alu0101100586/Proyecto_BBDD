@@ -1,0 +1,44 @@
+// Tablas empleado
+employee(id_employee, first_name, last_name, role_name, id_car_park)
+// car_park_id viene de la relacion 1:N de empleado trabaja en carpark
+  manager(id_employee, opinion)
+  cashier(id_employee, n_asigned_machines)
+  security(id_employee, certificate)
+
+// car park                   
+car_park(id_car_park, park_name, location, schedule) <------
+
+// tabla discount
+discount(id_discount, eligibility_criteria, amount)
+// Falta enlazarla con reservation, no entiendo porque es N:M y no 1:N
+
+applied_discounts(id_reservation, id_discount)
+// tabla payment
+
+payment(id_payment, amount, method)  <------
+  cash(id_payment, currency)
+  credit_card(id_payment, holder, account_number)
+  debit_card(id_payment, entity_name, expiration_date)
+
+// reservation
+
+reservation(id_reservation, start_time, end_time, id_payment, id_customer, id_parking_space)
+// id_payment viene de la relaicon 1:N con payment
+// id_customer viene de la relaicon 1:N con customer
+// id_parking_space viene de la relaicon 1:1:N con parking_space(N) y car(1)
+
+// tabla complaint | entidad debil
+complaint(id_complaint, id_reservation, description, resolution)
+
+// tabla customer
+
+
+customer(id_customer, first_name, second_name, email, phone_number, membership_status, id_car)
+// id_car_park viene de la relaicon 1:N con carpark
+
+car(id_car, brand, model, id_owner, id_parking_space)
+// id_parking_space viene de la relaicon 1:1:N con parking_space(N) y car(1)
+
+parking_space(id_parking_space, id_car_park, availability, length, width, accesibility)
+ordinary(id_parking_space, columns_near)
+disabled(id_parking_space, condition, validation_date)
