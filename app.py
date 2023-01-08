@@ -6,11 +6,11 @@ app = Flask(__name__)
 
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
-        	database="flask_db",
+        	database="parking_db",
         # user=os.environ['DB_USERNAME'],
-		user="p7",
+		user="adminPark",
 		# password=os.environ['DB_PASSWORD']
-        password="p7passwd")
+        password="passwd")
     return conn
 
 
@@ -18,11 +18,11 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM books;')
+    #cur.execute('SELECT * FROM books;')
     books = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('index.html', books=books)
+    return render_template('index.html') #, books=books)
 
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
