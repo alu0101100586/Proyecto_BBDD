@@ -41,6 +41,7 @@ CREATE TABLE public.car_park (
   PRIMARY KEY(id_car_park)
 );
 
+
 -- Tablas payment
 
 CREATE TABLE public.payment (
@@ -50,6 +51,7 @@ CREATE TABLE public.payment (
 
   PRIMARY KEY(id_payment)
 );
+
 
 CREATE TABLE public.cash (
   id_payment integer NOT NULL,
@@ -208,6 +210,7 @@ CREATE TABLE public.customer (
 				ON DELETE CASCADE
 );
 
+
 -- Tablas reservation
 
 CREATE TABLE public.reservation (
@@ -274,19 +277,60 @@ CREATE TABLE public.applied_discounts (
 );
 
 
+--
+-- Creacion de los Checks
+--
+ALTER TABLE customer
+ADD CONSTRAINT Check_phone_number
+UNIQUE (phone_number);
 
---
--- Creación de Disparadores
---
+ALTER TABLE payment
+ADD CONSTRAINT Check_amount_price
+CHECK (amount > 0);
+
+ALTER TABLE car_park
+ADD CONSTRAINT Check_park_name
+UNIQUE (park_name);
+
+ALTER TABLE cashier
+ADD CONSTRAINT Check_cashier_machines
+CHECK (n_asigned_machines >= 1);
+
+ALTER TABLE disabled
+ADD CONSTRAINT Check_condition_park
+CHECK (condition IN ("pregnant", "disabled"));
+
+ALTER TABLE discount
+ADD CONSTRAINT check_discount_amount
+CHECK (amount < 100);
+
+ALTER TABLE complaint
+ADD CONSTRAINT check_description
+CHECK description IS NOT NULL;
 
 --
 -- Insercion de datos en la tabla X
 -- 
--- INSERT INTO public.X VALUES ();
+
+
 --
--- Creacion de las Aserciones
+-- Creación de Funcion
 --
 
 --
--- Creacion de los Checks
+-- Creación de Disparadores
 --
+CREATE TRIGGER insert_new_row_debit_card
+AFTER INSERT on public.debit_card
+FOR EACH row
+DECLARE
+  exp_date date;
+BEGIN
+  --
+END;
+
+
+
+
+
+
