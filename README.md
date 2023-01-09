@@ -16,7 +16,7 @@
 ![Modelo Entidad relacion de la base de datos](https://github.com/alu0101100586/Proyecto_BBDD/blob/main/image/Modelo_Entidad_Relación_Parking.png)
 
 ## Modelo Relacional
-![Modelo Relacional de la base de datos]()
+![Modelo Relacional de la base de datos](https://github.com/alu0101100586/Proyecto_BBDD/blob/main/image/Modelo_Relacional_Parking.png)
 
 ## Consultas sobre la base de datos
 ### Titulo consulta
