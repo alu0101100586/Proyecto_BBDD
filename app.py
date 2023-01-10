@@ -8,9 +8,9 @@ def get_db_connection():
     conn = psycopg2.connect(host='localhost',
         	database="parking_db",
         # user=os.environ['DB_USERNAME'],
-		user="adminPark",
+		      user="postgres", #"adminpark",
 		# password=os.environ['DB_PASSWORD']
-        password="passwd")
+          password="admin1")
     return conn
 
 
@@ -18,11 +18,11 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    #cur.execute('SELECT * FROM books;')
-    books = cur.fetchall()
+    cur.execute('SELECT * FROM car_park;')
+    carss = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('index.html') #, books=books)
+    return render_template('index.html', cars = carss)
 
 @app.route('/create/', methods=('GET', 'POST'))
 def create():

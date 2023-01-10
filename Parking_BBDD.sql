@@ -11,15 +11,15 @@
 --
 -- Creación de la base de datos
 --
-DROP DATABASE IF EXISTS parking_db;
+DROP DATABASE parking_db IF EXISTS parking_db;
 CREATE DATABASE parking_db WITH TEMPLATE = template0 ENCODING = 'UTF8';
-ALTER DATABASE parking_db OWNER TO postgres;
+ALTER DATABASE parking_db OWNER TO adminpark;
 
 --
 -- Realizamos la conexión a la base de datos
 -- 
+-- \connect parking_db user adminpark identified BY parksswd;
 \connect parking_db
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -28,12 +28,12 @@ SET default_table_access_method = heap;
 -------- TABLAS DE LA BASE DE DATOS --------
 --------------------------------------------
 
--- ALTER TABLE public.security OWNER TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE parking_db TO adminpark;
 
 -- Tablas car_park
 
 CREATE TABLE public.car_park (
-  id_car_park integer NOT NULL,
+  id_car_park SERIAL NOT NULL,
   park_name varchar(20),
   location varchar(20),
   schedule varchar(100),
@@ -45,7 +45,7 @@ CREATE TABLE public.car_park (
 -- Tablas payment
 
 CREATE TABLE public.payment (
-  id_payment integer NOT NULL,
+  id_payment SERIAL NOT NULL,
   method varchar(20),
   amount integer,
 
@@ -89,7 +89,7 @@ CREATE TABLE public.debit_card (
 );
 
 CREATE TABLE public.employee (
-  id_employee integer NOT NULL,
+  id_employee SERIAL NOT NULL,
   first_name varchar(20),
   last_name varchar(20),
   role_name varchar(20),
@@ -138,7 +138,7 @@ CREATE TABLE public.security (
 -- Tabla parking_space
 
 CREATE TABLE public.parking_space (
-  id_parking_space integer NOT NULL,
+  id_parking_space SERIAL NOT NULL,
   availability BIT, -- como bool
   space_length integer,
   space_width integer,
@@ -179,7 +179,7 @@ CREATE TABLE public.disabled (
 -- Tabla customer
 
 CREATE TABLE public.car (
-  id_car integer NOT NULL,
+  id_car SERIAL NOT NULL,
   brand varchar(20),
   model varchar(20),
   -- id_owner integer,
@@ -195,7 +195,7 @@ CREATE TABLE public.car (
 -- Tabla customer
 
 CREATE TABLE public.customer (
-  id_customer integer NOT NULL,
+  id_customer SERIAL NOT NULL,
   first_name varchar(20),
   last_name varchar(20),
   email varchar(30),
@@ -214,7 +214,7 @@ CREATE TABLE public.customer (
 -- Tablas reservation
 
 CREATE TABLE public.reservation (
-  id_reservation integer NOT NULL,
+  id_reservation SERIAL NOT NULL,
   start_time timestamp,
   end_time timestamp,
   id_payment integer,
@@ -239,7 +239,7 @@ CREATE TABLE public.reservation (
 -- Tabla complaint
 
 CREATE TABLE public.complaint (
-  id_complaint integer NOT NULL,
+  id_complaint SERIAL NOT NULL,
   id_reservation integer,
   description varchar(100),
   resolution varchar(100),
@@ -254,7 +254,7 @@ CREATE TABLE public.complaint (
 -- Tablas discount
 
 CREATE TABLE public.discount (
-  id_discount integer NOT NULL,
+  id_discount SERIAL NOT NULL,
   eligibility_criteria varchar(20),
   amount integer,
 
@@ -276,6 +276,9 @@ CREATE TABLE public.applied_discounts (
 				ON DELETE CASCADE
 );
 
+-- Cambio de permisos
+
+ALTER TABLE public.car_park OWNER TO postgres;
 
 --
 -- Creacion de los Checks
@@ -304,15 +307,21 @@ ALTER TABLE discount
 ADD CONSTRAINT check_discount_amount
 CHECK (amount < 100);
 
-ALTER TABLE complaint
-ADD CONSTRAINT check_description
-CHECK description IS NOT NULL;
-
 --
 -- Insercion de datos en la tabla X
 -- 
+INSERT INTO public.car_park
+  (park_name, location, schedule) VALUES
+  ('Parking La Laguna', 'La Laguna', 'De lunes a viernes');
 
-
+INSERT INTO public.car_park
+  (park_name, location, schedule) VALUES
+  ('Parking Santa Cruz', 'Santa Cruz', 'Toda la semana');
+DELETE FROM public.car_park
+  WHERE id_car_park = 2;
+INSERT INTO public.car_park
+  (park_name, location, schedule) VALUES
+  ('Parking Nuevo', 'Santa Cruz', 'Toda la semana');
 --
 -- Creación de Funcion
 --

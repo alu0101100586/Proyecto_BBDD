@@ -2,4 +2,17 @@
 
 {% block content %}
   <h1>{% block title %} Parking Status {% endblock %}</h1>
+
+  {% if cars %}
+    {% for car in cars %}
+      <div class='book'>
+        <h3>{{ car[1] }} EN {{ car[2] }}</h3>
+        <i><p>HORARIO</p></i>
+        <i><p>({{ car[3] }})</p></i>
+      </div>
+    {%endfor%}
+  {% else %}
+    <p class="errorBook">No hay parkings disponibles</p>
+  {% endif %}
+
 {% endblock %}
