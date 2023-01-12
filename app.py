@@ -18,7 +18,8 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT car_park.id_car_park, car_park.park_name, car_park.location, car_park.total_spaces, car_park.hour_operation FROM car_park '
+    cur.execute('SELECT car_park.id_car_park, car_park.park_name, car_park.location, '
+                'car_park.total_spaces, COUNT(car_park.id_car_park) FROM car_park '
                 'CROSS JOIN customer '
                 'WHERE customer.id_car_park = car_park.id_car_park '
                 'GROUP BY car_park.id_car_park')
@@ -181,15 +182,54 @@ def deletefromtable(table):
     conn.close()
     return render_template("deletefromtable.html", options = rowsNames)
 
-
-
 @app.route('/update/', methods=('GET', 'POST'))
 def update():
-  if request.method == 'GET':
-    conn.get_db_connection()
+  if request.method == 'POST':
+    table = request.form['table']
+    conn = get_db_connection()
     cur = conn.cursor()
+
+    return redirect(url_for('updatefromtable', table=table))
+
+  else:
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+    tables = cur.fetchall()
+    options = []
+    for table in tables:
+      options.append((table[0], table[0]))
 
     cur.close()
     conn.close()
-    return redirect(url_for('index'))
-  return render_template("update.html")
+    return render_template("update.html", options = options)
+
+@app.route('/updatefromtable/<table>', methods=('GET', 'POST'))
+def updatefromtable(table):
+  if request.method == 'POST':
+    column_name = request.form['column_name']
+    oldValue = request.form['oldValue']
+    newValue = request.form['newValue']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+      cur.execute("UPDATE {} SET {} = '{}' WHERE {} = '{}';".format(table, column_name, newValue, column_name, oldValue))
+    except psycopg2.Error as err:
+      print('Error:', err)
+      return render_template('error.html', errorMessage=err.diag.message_primary)
+    conn.commit()
+    return redirect(url_for("index"))
+
+  else:
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute('SELECT column_name '
+                'FROM information_schema.columns '
+                'WHERE table_name = \'{}\''.format(table))
+    rowsNames = cur.fetchall()
+
+    cur.close()
+    conn.close()
+    return render_template("updatefromtable.html", options = rowsNames)

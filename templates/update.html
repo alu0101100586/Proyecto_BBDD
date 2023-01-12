@@ -1,99 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Formularios para Eliminar {% endblock %}</h1>
+    <h1>{% block title %} Selecciona una tabla para actualizar {% endblock %}</h1>
     <form method="post">
-      <p>Actualizar Parking</p>
-      <p>
-        <label for="id">ID Parking</label>
-        <input type="number" name="id" placeholder="Car Park Id" required="required"></input>
-      </p>
-      <p>
-        <label for="id">Nombre</label>
-        <input type="text" name="name" placeholder="Name" required="required"></input>
-      </p>
-      <p>
-        <label for="id">Localización</label>
-        <input type="text" name="localization" placeholder="Localization" required="required"></input>
-      </p>
-      <p>
-        <label for="id">Plazas Totales</label>
-        <input type="text" name="total_spaces" placeholder="Localization" required="required"></input>
-      </p>
-      <p>
-        <label for="id">Horas Abiertos</label>
-        <input type="number" name="hour" placeholder="Hour Operation" required="required"></input>
-      </p>
-      <p>
-        <label for="id">Tarifas</label>
-        <input type="number" name="fees" placeholder="Fees" required="required"></input>
-      </p>
-      <p>
-        <input type="hidden" name="form_id" value="car_park">
-        <button type="submit">Actualizar</button>
-      </p>
+        <label for="table">Selecciona una actualizar</label>
+        <select name="table" id="table">
+            {% for option in options %}
+                <option value="{{ option.0 }}">{{ option.1 }}</option>
+            {% endfor %}
+        </select>
+        <p>
+            <button type="submit">Enviar</button>
+        </p>
     </form>
 
-    <hr>
-
-    <form method="post">
-      <p>Actualizar Plaza aparcamiento</p>
-      <p>
-        <label for="id">ID Parking Space</label>
-        <input type="number" name="id"placeholder="Parking Space Id"></input>
-      </p>
-      <p>
-        <label for="id">Name</label>
-        <input type="number" name="id"placeholder="Name"></input>
-      </p>
-      <p>
-        <input type="hidden" name="form_id" value="parking_space">
-        <button type="submit">Actualizar</button>
-      </p>
-    </form>
-
-    <hr>
-
-    <form method="post">
-      <p>Actualizar Cliente</p>
-      <p>
-        <label for="id">ID Customer - ID Parking</label>
-        <input type="number" name="id"placeholder="Customer Id"></input>
-        <input type="number" name="id2"placeholder="Car Park Id"></input>
-      </p>
-      <p>
-        <input type="hidden" name="form_id" value="customer">
-        <button type="submit">Eliminar</button>
-      </p>
-    </form>
-
-    <hr>
-
-    <form method="post">
-      <p>Actualizar Coche</p>
-      <p>
-        <label for="id">ID Car - ID Customer</label>
-        <input type="number" name="id"placeholder="Car Id"></input>
-        <input type="number" name="id2"placeholder="Customer Id"></input>
-      </p>
-      <p>
-        <input type="hidden" name="form_id" value="car">
-        <button type="submit">Eliminar</button>
-      </p>
-    </form>
-
-    <hr>
-
-    <form method="post">
-      <p>Actualizar Reserva</p>
-      <p>
-        <label for="id">ID Reservation - ID Customer</label>
-        <input type="number" name="id"placeholder="Reservation Id"></input>
-        <input type="number" name="id2"placeholder="Customer Id"></input>
-      </p>
-      <p>
-        <input type="hidden" name="form_id" value="reservation">
-        <button type="submit">Eliminar</button>
-      </p>
-    </form>
 {% endblock %}
