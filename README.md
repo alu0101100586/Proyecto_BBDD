@@ -20,3 +20,6 @@ Las consultas y operaciones sobre la base de datos pueden ser consultadas en elk
 
 ## Modelo Relacional
 ![Modelo Relacional de la base de datos](https://github.com/alu0101100586/Proyecto_BBDD/blob/main/image/Modelo_Relacional_Parking.png)
+
+## Consultas
+Las consultas estan descritas en el fichero Consultas_Parking SQL y los resultados de las mismas estan tanto en el informe como en las imagenes del repositorio
