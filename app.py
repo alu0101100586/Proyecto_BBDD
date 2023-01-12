@@ -7,9 +7,7 @@ app = Flask(__name__)
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
         	database="parking_db",
-        # user=os.environ['DB_USERNAME'],
-		      user="postgres", #"adminpark",
-		    # password=os.environ['DB_PASSWORD']
+		      user="postgres",
           password="admin1")
     return conn
 
@@ -65,7 +63,7 @@ def create():
                 errorMessage='No existe ningun parking con ese nombre')
 
         try:
-          # Insertamos los datos de forma ordenada en las tablas correspondientesLongitud = request.form['Longitud']
+          # Insertamos los datos de forma ordenada en las tablas correspondientes
           cur.execute('INSERT INTO customer '
                       '(id_customer, id_car_park, first_name, last_name, email, phone_number) VALUES '
                       "('{}','{}', '{}', '{}', '{}', '{}')".format(DNI, parkcheck[0][0], nombre, Apellidos, Email, NumeroContacto))
@@ -97,9 +95,6 @@ def create():
       cur.execute('SELECT c.park_name FROM car_park AS c '
                   'CROSS JOIN parking_space AS u '
                   'WHERE u.id_car_park = c.id_car_park ')
-                  #'AND (c.total_spaces - COUNT(u.id_car_park) > 0) '
-                  #'GROUP BY u.id_car_park')
-      #parks = cur.fetchall()
       cur.close()
       conn.close()
       return render_template('reservate.html', parkings=parks)
