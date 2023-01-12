@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Tuplas de la tabla seleccionada</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for column in rowNames %}
+                  {% for value in column %}
+                    <th>{{ value }}</th>
+                  {% endfor %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for value in row %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

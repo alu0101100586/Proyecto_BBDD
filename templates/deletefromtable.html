@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Selecciona una tupla para borrar {% endblock %}</h1>
+    <form method="post">
+        <label for="table">Selecciona una tupla</label>
+        <select name="column_name" id="table">
+            {% for option in options %}
+              {% for value in option %}
+                <option value="{{ value }}">{{ value }}</option>
+              {% endfor %}
+            {% endfor %}
+        </select>
+        <p>
+          <label for="ID">Valor</label>
+          <input type="text" name="ID"
+                placeholder="Valor de la tupla a borrar">
+          </input>
+        </p>
+        <p>
+            <button type="submit">Enviar</button>
+        </p>
+    </form>
+
+{% endblock %}

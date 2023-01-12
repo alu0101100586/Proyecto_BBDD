@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Crea una reserva {% endblock %}</h1>
+    <form method="post">
+      <div class="col">
+        <p>Datos cliente</p>
+        <p>
+          <label for="DNI">DNI</label>
+          <input type="text" name="DNI"
+            placeholder="DNI">
+          </input>
+        </p>
+        <p>
+          <label for="Nombre">Nombre</label>
+          <input type="text" name="Nombre"
+            placeholder="Nombre">
+          </input>
+        </p>
+        <p>
+          <label for="Apellidos">Apellidos</label>
+          <input type="text" name="Apellidos"
+            placeholder="Apellidos">
+          </input>
+        </p>
+        <p>
+          <label for="Email">Email</label>
+          <input type="text" name="Email"
+                placeholder="Email cliente">
+          </input>
+        </p>
+        <p>
+          <label for="NumeroContacto">Número de contacto</label>
+          <input type="tel" name="NumeroContacto"></input>
+        </p>
+      </div>
+      <div class="col">
+        <p>Datos coche</p>
+        <p>
+          <label for="Marca">Marca</label>
+          <input type="text" name="Marca"
+            placeholder="Marca">
+          </input>
+        </p>
+        <p>
+          <label for="Modelo">Modelo</label>
+          <input type="text" name="Modelo"
+            placeholder="Modelo">
+          </input>
+        </p>
+        <p>
+          <label for="Matricula">Matricula</label>
+          <input type="text" name="Matricula"
+                placeholder="Matricula">
+          </input>
+        </p>
+      </div>
+      <div class="col">
+        <p>¿Donde desea aparcar?</p>
+        {% if parkings %}
+          <p>Parkings disponibles:</p>
+          {% for parking in parkings %} 
+            <li>{{ parking[0] }}</li>
+          {%endfor%}
+        {% else %}
+          <p class="errorBook">No hay parkings disponibles</p>
+        {% endif %}
+        <p>
+          <label for="Aparcamiento">Nombre del aparcamiento</label>
+          <input type="text" name="Aparcamiento"
+            placeholder="Nombre del aparcamiento">
+          </input>
+        </p>
+        <p>
+          <label for="Modelo">Modelo</label>
+          <input type="text" name="Modelo"
+            placeholder="Modelo">
+          </input>
+        </p>
+        <p>
+          <label for="Matricula">Matricula</label>
+          <input type="text" name="Matricula"
+                placeholder="Matricula">
+          </input>
+        </p>
+      </div>
+      <p>
+        <button type="submit">Submit</button>
+      </p>
+    </form>
+{% endblock %}

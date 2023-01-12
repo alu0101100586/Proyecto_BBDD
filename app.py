@@ -9,7 +9,7 @@ def get_db_connection():
         	database="parking_db",
         # user=os.environ['DB_USERNAME'],
 		      user="postgres", #"adminpark",
-		# password=os.environ['DB_PASSWORD']
+		    # password=os.environ['DB_PASSWORD']
           password="admin1")
     return conn
 
@@ -18,7 +18,10 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM car_park;')
+    cur.execute('SELECT car_park.id_car_park, car_park.park_name, car_park.location, car_park.total_spaces, car_park.hour_operation FROM car_park '
+                'CROSS JOIN customer '
+                'WHERE customer.id_car_park = car_park.id_car_park '
+                'GROUP BY car_park.id_car_park')
     carss = cur.fetchall()
     cur.close()
     conn.close()
@@ -27,124 +30,166 @@ def index():
 @app.route('/create/', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
-        title = request.form['title']
-        author = request.form['author']
-        pages_num = int(request.form['pages_num'])
-        review = request.form['review']
+        DNI = request.form['DNI']
+        nombre = request.form['Nombre']
+        Apellidos = request.form['Apellidos']
+        Email = request.form['Email']
+        NumeroContacto = request.form['NumeroContacto']
 
-        if (title == '' or author == '' or request.form['pages_num'] == '' or review == '') :
+        Marca = request.form['Marca']
+        Modelo = request.form['Modelo']
+        Matricula = request.form['Matricula']
+
+        Aparcamiento = request.form['Aparcamiento']
+        Longitud = request.form['Longitud']
+        Anchura = request.form['Anchura']
+        NombreAparcamiento = request.form['NombreAparcamiento']
+        Tipo = request.form['Tipo']
+        TipoGen = 'disabled'
+        if (Tipo == 'boxcar' or Tipo == 'touring car'):
+          TipoGen = 'ordinary'
+
+        if (DNI == '' or nombre == '' or Apellidos == '' or Email == '' or Tipo == '' or
+            NumeroContacto == '' or Marca == '' or Modelo == '' or Matricula == '' or 
+            Aparcamiento == '' or Longitud == '' or Anchura == '' or NombreAparcamiento == '') :
           return render_template('error.html',
                 errorMessage='Debe completar todos los campos del formulario') 
-
-
+        
         conn = get_db_connection()
         cur = conn.cursor()
-        
+        cur.execute("SELECT id_car_park FROM car_park WHERE park_name = '{}'".format(Aparcamiento))
+        parkcheck = cur.fetchall()
+        if (len(parkcheck) != 1):
+          return render_template('error.html',
+                errorMessage='No existe ningun parking con ese nombre')
+
         try:
-          cur.execute('INSERT INTO books (title, author, pages_num, review)'
-                      'VALUES (%s, %s, %s, %s)',
-                      (title, author, pages_num, review))
+          # Insertamos los datos de forma ordenada en las tablas correspondientesLongitud = request.form['Longitud']
+          cur.execute('INSERT INTO customer '
+                      '(id_customer, id_car_park, first_name, last_name, email, phone_number) VALUES '
+                      "('{}','{}', '{}', '{}', '{}', '{}')".format(DNI, parkcheck[0][0], nombre, Apellidos, Email, NumeroContacto))
+          
+          cur.execute('INSERT INTO car '
+                      '(id_customer, plate, brand, model) VALUES '
+                      "('{}','{}', '{}', '{}')".format(DNI, Matricula, Marca, Modelo))
+                      
+          cur.execute('INSERT INTO parking_space '
+                      '(id_car_park, name, availability, space_length, space_width, accesibility) VALUES '
+                      "('{}','{}', false, '{}', '{}', '{}')".format(parkcheck[0][0], NombreAparcamiento, Longitud , Anchura, TipoGen))
+          cur.execute('INSERT INTO reservation '
+                      '(id_customer, start_time, end_time) VALUES '
+                      "('{}', CURRENT_TIMESTAMP, NULL)".format(DNI, NombreAparcamiento, Longitud , Anchura, TipoGen))
+        
+
         except psycopg2.Error as err:
           print('Error:', err)
           return render_template('error.html', errorMessage=err.diag.message_primary)
         conn.commit()
         cur.close()
         conn.close()
-        return redirect(url_for('index'))
+        return render_template('payment.html')
+    if request.method == 'GET':
+      conn = get_db_connection()
+      cur = conn.cursor()
+      cur.execute('SELECT park_name FROM car_park')
+      parks = cur.fetchall()
+      cur.execute('SELECT c.park_name FROM car_park AS c '
+                  'CROSS JOIN parking_space AS u '
+                  'WHERE u.id_car_park = c.id_car_park ')
+                  #'AND (c.total_spaces - COUNT(u.id_car_park) > 0) '
+                  #'GROUP BY u.id_car_park')
+      #parks = cur.fetchall()
+      cur.close()
+      conn.close()
+      return render_template('reservate.html', parkings=parks)
+      
+    return redirect(url_for('index'))
 
-    return render_template('create.html')
+@app.route('/read/', methods=('GET', 'POST'))
+def read():
+  if request.method == 'POST':
+    table = request.form['table']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT column_name '
+                'FROM information_schema.columns '
+                'WHERE table_name = \'{}\''.format(table))
+    rowsNames = cur.fetchall()
+    cur.execute("SELECT * FROM {}".format(table))
+    rows = cur.fetchall()
+    return render_template("table.html", rows=rows, table_name=table, rowNames=rowsNames)
+  else:
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+    tables = cur.fetchall()
+    options = []
+    for table in tables:
+      options.append((table[0], table[0]))
+    cur.close()
+    conn.close()
+    return render_template("read.html", options = options)
 
 @app.route('/delete/', methods=('GET', 'POST'))
 def delete():
-    delbook = None
-    deleted = False
-    requestedID = None
-    if request.method == 'POST':
-        requestedID = request.form['id']
-        conn = get_db_connection()
-        cur = conn.cursor()
-        if (requestedID == '') :
-          return render_template('error.html',
-            errorMessage='Debe proporcioar un ID')
-        cur.execute('SELECT * FROM books WHERE id = \'' + requestedID + '\';')
-        delbook = cur.fetchall()
-        
-        if len(delbook) == 0:
-          delbook = None
-          
-        else:
-          cur.execute('DELETE FROM books ' +
-                      'WHERE id = \'' + requestedID + '\';')
-          delbook = delbook[0]
-        
-        deleted = True
-          
-        conn.commit()
-        cur.close()
-        conn.close()
-        #return redirect(url_for('index'))
+  if request.method == 'POST':
+    table = request.form['table']
+    conn = get_db_connection()
+    cur = conn.cursor()
 
-    return render_template('delete.html', book = delbook, delFlag = deleted, reqID = requestedID)
+    return redirect(url_for('deletefromtable', table=table))
 
-@app.route('/modify/', methods=('GET', 'POST'))
-def requestmodify():
-    book = None
-    modified = False
-    requestedID = None
-    newbook = None
-    if request.method == 'POST':
-      requestedID = request.form['id']
+  else:
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+    tables = cur.fetchall()
+    options = []
+    for table in tables:
+      options.append((table[0], table[0]))
 
-      conn = get_db_connection()
-      cur = conn.cursor()
+    cur.close()
+    conn.close()
+    return render_template("delete.html", options = options)
 
-      # Check id is saved
-      isIn = False
-      if (requestedID == '') :
-        return render_template('error.html',
-          errorMessage='Debe proporcioar un ID')
-      cur.execute('SELECT * FROM books WHERE id = \'' + requestedID + '\';')
-      newbook = cur.fetchall()
-      if len(newbook) == 0:
-        # newbook = newbook[0]
-        return render_template('error.html', errorMessage = 'Book with Id = 2 does not exist.') 
+@app.route('/deletefromtable/<table>', methods=('GET', 'POST'))
+def deletefromtable(table):
+  if request.method == 'POST':
+    column_name = request.form['column_name']
+    ID = request.form['ID']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+      cur.execute("DELETE FROM {} WHERE {} = {};".format(table, column_name, ID))
+    except psycopg2.Error as err:
+      print('Error:', err)
+      return render_template('error.html', errorMessage=err.diag.message_primary)
+    conn.commit()
+    return redirect(url_for("index"))
+
+  else:
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute('SELECT column_name '
+                'FROM information_schema.columns '
+                'WHERE table_name = \'{}\''.format(table))
+    rowsNames = cur.fetchall()
+
+    cur.close()
+    conn.close()
+    return render_template("deletefromtable.html", options = rowsNames)
 
 
 
-      title = request.form['title']
-      author = request.form['author']
-      pages_num = int(request.form['pages_num'])
-      review = request.form['review']
+@app.route('/update/', methods=('GET', 'POST'))
+def update():
+  if request.method == 'GET':
+    conn.get_db_connection()
+    cur = conn.cursor()
 
-      if (title == '' or author == '' or request.form['pages_num'] == '' or review == '') :
-        return render_template('error.html',
-          errorMessage='Debe completar todos los campos del formulario') 
-      
-      try:
-        cur.execute('UPDATE books '
-                    'SET title = %s, '
-                    'author = %s, '
-                    'pages_num = %s, '
-                    'review = %s '
-                    'WHERE id = %s;',
-                    (title, author, pages_num, review, requestedID))
-      except psycopg2.Error as err:
-        print('Error:', err)
-        return render_template('error.html', errorMessage=err.diag.message_primary)
-      modified = True
-      cur.execute('SELECT * FROM books WHERE id = \'' + requestedID + '\';')
-      newbook = cur.fetchall()
-      
-      if len(newbook) == 0:
-        newbook = None
-      else:
-        newbook = newbook[0]
-      conn.commit()
-      cur.close()
-      conn.close()
-
-    return render_template('modify.html', bookdata = book, modFlag = modified, reqID = requestedID, book = newbook)
-
-@app.route('/about/', methods=('GET', 'POST'))
-def aboutUs():
-  return render_template('about.html')
+    cur.close()
+    conn.close()
+    return redirect(url_for('index'))
+  return render_template("update.html")

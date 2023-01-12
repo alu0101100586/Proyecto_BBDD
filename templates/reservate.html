@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>{% block title %} Crea una reserva {% endblock %}</h3>
+    <form method="post">
+      <div class="col">
+        <p>Datos cliente</p>
+        <p>
+          <label for="DNI">DNI</label>
+          <input type="text" name="DNI"
+            placeholder="DNI">
+          </input>
+        </p>
+        <p>
+          <label for="Nombre">Nombre</label>
+          <input type="text" name="Nombre"
+            placeholder="Nombre">
+          </input>
+        </p>
+        <p>
+          <label for="Apellidos">Apellidos</label>
+          <input type="text" name="Apellidos"
+            placeholder="Apellidos">
+          </input>
+        </p>
+        <p>
+          <label for="Email">Email</label>
+          <input type="text" name="Email"
+                placeholder="Email cliente">
+          </input>
+        </p>
+        <p>
+          <label for="NumeroContacto">Número de contacto</label>
+          <input type="tel" name="NumeroContacto"></input>
+        </p>
+      </div>
+      <div class="col">
+        <p>Datos coche</p>
+        <p>
+          <label for="Marca">Marca</label>
+          <input type="text" name="Marca"
+            placeholder="Marca">
+          </input>
+        </p>
+        <p>
+          <label for="Modelo">Modelo</label>
+          <input type="text" name="Modelo"
+            placeholder="Modelo">
+          </input>
+        </p>
+        <p>
+          <label for="Matricula">Matricula</label>
+          <input type="text" name="Matricula"
+                placeholder="Matricula">
+          </input>
+        </p>
+      </div>
+      <div class="col">
+        <p>¿Donde desea aparcar?</p>
+        {% if parkings %}
+          <p>Parkings disponibles:</p>
+          {% for parking in parkings %} 
+            <li>{{ parking[0] }}</li>
+          {%endfor%}
+        {% else %}
+          <p class="errorBook">No hay parkings disponibles</p>
+        {% endif %}
+        <p>
+          <label for="Aparcamiento">Nombre del aparcamiento</label>
+          <input type="text" name="Aparcamiento"
+            placeholder="Nombre del aparcamiento">
+          </input>
+        </p>
+        <p>
+          <label for="Longitud">Longitud</label>
+          <input type="text" name="Longitud"
+            placeholder="8">
+          </input>
+        </p>
+        <p>
+          <label for="Anchura">Anchura</label>
+          <input type="text" name="Anchura"
+            placeholder="6">
+          </input>
+        </p>
+        <p>
+          <label for="NombreAparcamiento">NombreAparcamiento</label>
+          <input type="text" name="NombreAparcamiento"
+                placeholder="AB, A1, 03, ...">
+          </input>
+        </p>
+        <p>¿Qué tipo de parking necesita?</p>
+        <input type="radio" id="Normal" name="Tipo" value="Normal">
+        <label for="Normal">Normal</label><br>
+        <input type="radio" id="Minusvalido" name="Tipo" value="Minusvalido">
+        <label for="Minusvalido">Minusvalido</label><br>
+        
+        <div id="TipoNormal" style="display: none;">
+          <label for="TipoNormal">TipoNormal</label>
+          <select name="TipoNormal">
+            <option for="table" value="touring car">touring car</option>
+            <option for="table" value="boxcar">boxcar</option>
+          </select>
+        </div>
+        <div id="TipoMinusvalido" style="display: none;">
+          <label for="TipoMinusvalido">Tipo de aparcamiento minusvalido</label>
+          <select name="tiposMinus">
+            <option for="table" value="disabled">disabled</option>
+            <option for="table" value="pregnant">pregnant</option>
+          </select>
+        </div>
+
+        <script>
+          var radios = document.getElementsByName("Tipo");
+          var TipoNormal =  document.getElementById("TipoNormal");
+          var TipoMinusvalido =  document.getElementById("TipoMinusvalido");
+
+          for(var i = 0; i < radios.length; i++) {
+            radios[i].onclick = function() {
+              var val = this.value;
+              if(val == 'Normal'){  // Assuming your value for radio buttons is radio1, radio2 and radio3.
+                TipoNormal.style.display = 'block';   // show
+                TipoMinusvalido.style.display = 'none';// hide
+              }
+              else if(val == 'Minusvalido'){
+                TipoNormal.style.display = 'none';
+                TipoMinusvalido.style.display = 'block';
+              } else {
+                TipoNormal.style.display = 'none';
+                TipoMinusvalido.style.display = 'none';
+              }    
+
+            }
+          }
+        </script>
+        <p>
+          <label for="start">Desde: </label>
+          <input type="time" name="start" step="1">
+        </p>
+        <p>
+          <label for="end">Hasta: </label>
+          <input type="time" name="end" step="2">
+        </p>
+      </div>
+      <p>
+        <button type="submit">Submit</button>
+      </p>
+    </form>
+{% endblock %}

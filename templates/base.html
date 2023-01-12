@@ -42,15 +42,26 @@
                 font-size: 20px;
         }
 
+        .row {
+          background: #f6f6f6;
+          border: 1px solid #ccc;
+          overflow: hidden;
+          padding: 10px;
+        }
+        .col {
+            float: left;
+            width: 33%
+        }
+
     </style>
 </head>
 <body>
     <nav>
         <a href="{{ url_for('index') }}">FlaskApp</a>
         <a href="{{ url_for('create')}}">Reservate</a>
-        <a href="{{ url_for('aboutUs') }}">About</a>
+        <a href="{{ url_for('read')}}">Leer</a>
         <a href="{{ url_for('delete') }}">Delete</a>
-        <a href="{{ url_for('requestmodify') }}">Modify</a>
+        
     </nav>
     <hr>
     <div class="content">

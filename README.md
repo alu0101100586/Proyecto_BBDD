@@ -4,6 +4,9 @@
  - Paula Regalado de León (alu0101330174)
  - Álvaro Rodríguez Gómez (alu0101362953)
  - Jonay Estévez Díaz (alu0101100586)
+
+## Aspectos a aclarar
+Las consultas y operaciones sobre la base de datos pueden ser consultadas en elk último apartado del informe del proyecto.
  
 ## Objetivo del Proyecto
  - Representar los requisitos de datos y las relaciones para administrar las operaciones de un aparcamiento de coches, incluído las propias plazas de aparcamiento, la reserva de las mismas, el pago, tarifas y gestión de empleados.
@@ -17,8 +20,3 @@
 
 ## Modelo Relacional
 ![Modelo Relacional de la base de datos](https://github.com/alu0101100586/Proyecto_BBDD/blob/main/image/Modelo_Relacional_Parking.png)
-
-## Consultas sobre la base de datos
-### Titulo consulta
-![imagen consulta]()
-Explicacion de la consulta
